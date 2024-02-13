@@ -193,8 +193,11 @@ function fetchVersions(includePreReleases, repoToken) {
         }
         let tags = [];
         for (let pageNum = 1, morePages = true; morePages; pageNum++) {
-            const p = yield rest.get("https://api.github.com/repos/protocolbuffers/protobuf/releases?page=" +
-                pageNum);
+
+            const url = "https://api.github.com/repos/protocolbuffers/protobuf/releases?page=" + pageNum;
+            console.log("fetching from API: " + url);
+
+            const p = yield rest.get(url);
             const nextPage = p.result || [];
             if (nextPage.length > 0) {
                 tags = tags.concat(nextPage);
