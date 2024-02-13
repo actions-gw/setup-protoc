@@ -197,7 +197,7 @@ function fetchVersions(version, includePreReleases, repoToken) {
         {
             //use cached response
             console.log("Using version 24.4 (cached info without using github api)");
-            return ["v24.4"];
+            return ["24.4"];
         }
         else
         {
