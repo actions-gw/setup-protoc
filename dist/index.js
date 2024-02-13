@@ -193,11 +193,11 @@ function fetchVersions(version, includePreReleases, repoToken) {
         }
         let tags = [];
 
-        if (version == "24" || version == "24.4")
+        if (version == "24" || version == "24.4" || version == "25.2" || version == "25" || version == "26.0")
         {
             //use cached response
-            console.log("Using version 24.4 (cached info without using github api)");
-            return ["24.4"];
+            console.log("Using version " + version + " (cached info without using github api)");
+            return ["24.4","25.2","26.0"];
         }
         else
         {
