@@ -192,8 +192,11 @@ function fetchVersions(version, includePreReleases, repoToken) {
             rest = new restm.RestClient("setup-protoc");
         }
         let tags = [];
-
-        if (version == "24" || version == "24.4" || version == "25.2" || version == "25" || version == "26.0") {
+        if (version == "24" ||
+            version == "24.4" ||
+            version == "25.2" ||
+            version == "25" ||
+            version == "26.0") {
             //use cached response
             console.log("Using version " + version + " (cached info without using github api)");
             return new Promise(() => ["24.4", "25.2", "26.0"]);
@@ -211,7 +214,6 @@ function fetchVersions(version, includePreReleases, repoToken) {
                 }
             }
         }
-
         return tags
             .filter((tag) => tag.tag_name.match(/v\d+\.[\w.]+/g))
             .filter((tag) => includePrerelease(tag.prerelease, includePreReleases))
