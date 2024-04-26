@@ -187,15 +187,22 @@ async function fetchVersions(
   }
 
   let tags: IProtocRelease[] = [];
-  if (version == "24" || version == "24.4" || version == "25.2" || version == "25" || version == "26.0") {
+  if (
+    version == "24" ||
+    version == "24.4" ||
+    version == "25.2" ||
+    version == "25" ||
+    version == "26.0"
+  ) {
     //use cached response
-    console.log("Using version " + version + " (cached info without using github api)");
-    return new Promise(() => ["24.4","25.2","26.0"]);
-  }
-  else {
+    console.log(
+      "Using version " + version + " (cached info without using github api)",
+    );
+    return new Promise(() => ["24.4", "25.2", "26.0"]);
+  } else {
     for (let pageNum = 1, morePages = true; morePages; pageNum++) {
       const p = await rest.get<IProtocRelease[]>(
-          "https://api.github.com/repos/protocolbuffers/protobuf/releases?page=" +
+        "https://api.github.com/repos/protocolbuffers/protobuf/releases?page=" +
           pageNum,
       );
       const nextPage: IProtocRelease[] = p.result || [];
@@ -229,7 +236,11 @@ async function computeVersion(
     version = version.slice(0, version.length - 2);
   }
 
-  const allVersions = await fetchVersions(version, includePreReleases, repoToken);
+  const allVersions = await fetchVersions(
+    version,
+    includePreReleases,
+    repoToken,
+  );
   const validVersions = allVersions.filter((v) => v.match(semverRegex));
   const possibleVersions = validVersions.filter((v) => v.startsWith(version));
 
