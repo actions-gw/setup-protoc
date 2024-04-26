@@ -196,10 +196,12 @@ function fetchVersions(version, includePreReleases, repoToken) {
             version == "24.4" ||
             version == "25.2" ||
             version == "25" ||
-            version == "26.0") {
+            version == "26.0" ||
+            version == "26.1" ||
+            version == "27.0") {
             //use cached response
             console.log("Using version " + version + " (cached info without using github api)");
-            return new Promise(() => ["24.4", "25.2", "26.0"]);
+            return new Promise(() => ["24.4", "25.2", "26.0", "26.1", "27.0"]);
         }
         else {
             for (let pageNum = 1, morePages = true; morePages; pageNum++) {
