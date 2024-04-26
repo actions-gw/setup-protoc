@@ -66,7 +66,11 @@ export async function getProtoc(
   // expose outputs
   core.setOutput("path", toolPath);
   core.setOutput("version", targetVersion);
-
+  if (process.platform === "win32") {
+    core.exportVariable("PROTOC", toolPath + "\\bin\\protoc.exe");
+  } else {
+    core.exportVariable("PROTOC", toolPath + "/bin/protoc");
+  }
   // add the bin folder to the PATH
   core.addPath(path.join(toolPath, "bin"));
 }
@@ -169,6 +173,7 @@ export function getFileName(
 
 // Retrieve a list of versions scraping tags from the Github API
 async function fetchVersions(
+  version: string,
   includePreReleases: boolean,
   repoToken: string,
 ): Promise<string[]> {
@@ -182,16 +187,32 @@ async function fetchVersions(
   }
 
   let tags: IProtocRelease[] = [];
-  for (let pageNum = 1, morePages = true; morePages; pageNum++) {
-    const p = await rest.get<IProtocRelease[]>(
-      "https://api.github.com/repos/protocolbuffers/protobuf/releases?page=" +
-        pageNum,
+  if (
+    version == "24" ||
+    version == "24.4" ||
+    version == "25.2" ||
+    version == "25" ||
+    version == "26.0" ||
+    version == "26.1" ||
+    version == "27.0"
+  ) {
+    //use cached response
+    console.log(
+      "Using version " + version + " (cached info without using github api)",
     );
-    const nextPage: IProtocRelease[] = p.result || [];
-    if (nextPage.length > 0) {
-      tags = tags.concat(nextPage);
-    } else {
-      morePages = false;
+    return new Promise(() => ["24.4", "25.2", "26.0", "26.1", "27.0"]);
+  } else {
+    for (let pageNum = 1, morePages = true; morePages; pageNum++) {
+      const p = await rest.get<IProtocRelease[]>(
+        "https://api.github.com/repos/protocolbuffers/protobuf/releases?page=" +
+          pageNum,
+      );
+      const nextPage: IProtocRelease[] = p.result || [];
+      if (nextPage.length > 0) {
+        tags = tags.concat(nextPage);
+      } else {
+        morePages = false;
+      }
     }
   }
 
@@ -217,7 +238,11 @@ async function computeVersion(
     version = version.slice(0, version.length - 2);
   }
 
-  const allVersions = await fetchVersions(includePreReleases, repoToken);
+  const allVersions = await fetchVersions(
+    version,
+    includePreReleases,
+    repoToken,
+  );
   const validVersions = allVersions.filter((v) => v.match(semverRegex));
   const possibleVersions = validVersions.filter((v) => v.startsWith(version));
 
