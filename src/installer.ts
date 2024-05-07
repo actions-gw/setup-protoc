@@ -253,13 +253,13 @@ async function computeVersion(
     .sort(semver.rcompare)
     .map((v) => versionMap.get(v));
 
-  core.debug(`evaluating ${versions.length} versions`);
+  console.log(`evaluating ${versions.length} versions`);
 
   if (versions.length === 0) {
     throw new Error("unable to get latest version");
   }
 
-  core.debug(`matched: ${versions[0]}`);
+  console.log(`matched: ${versions[0]}`);
 
   return "v" + versions[0];
 }
